@@ -3,9 +3,6 @@ name: Build and deploy Jekyll site to GitHub Pages
 on:
   push:
     branches: [ master ]
-  permissions:
-    contents: write
-    pages: write
 
 jobs:
   build-deploy:
