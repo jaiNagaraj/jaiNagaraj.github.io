@@ -1,0 +1,16 @@
+title: "Jai Vivek Nagaraj"
+email: jai.v.nagaraj@gmail.com
+description: "Personal site of Jai Nagaraj"
+baseurl: "" # set to "/repo" if deploying to a project page
+url: "https://jaiNagaraj.github.io"
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+author:
+  name: "Jai Nagaraj"
+  github: "jaiNagaraj"
+
+markdown: kramdown
+permalink: /:categories/:year/:month/:day/:title/
