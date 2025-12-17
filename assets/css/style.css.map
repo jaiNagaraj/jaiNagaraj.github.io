@@ -1,0 +1,1 @@
+{"version":3,"sourceRoot":"","sources":["style.scss"],"names":[],"mappings":"AAAA;AACA;EACE;EACA;;;AAGF;EAAI","sourcesContent":["/* Tiny custom CSS (override minima defaults) */\nbody {\n  font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif;\n  line-height: 1.6;\n}\n\na { color: #0066cc; }\n"],"file":"style.css"}
