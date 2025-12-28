@@ -1,1 +1,92 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-12-17T01:39:45-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jai Vivek Nagaraj</title><subtitle>Personal site of Jai Nagaraj</subtitle><author><name>Jai Nagaraj</name></author><entry><title type="html">Building a memory-efficient Kalman Filter</title><link href="http://localhost:4000/blog/2025/12/16/lofi/" rel="alternate" type="text/html" title="Building a memory-efficient Kalman Filter" /><published>2025-12-16T08:00:00-06:00</published><updated>2025-12-16T08:00:00-06:00</updated><id>http://localhost:4000/blog/2025/12/16/lofi</id><content type="html" xml:base="http://localhost:4000/blog/2025/12/16/lofi/"><![CDATA[<p>Under construction, check back soon!</p>]]></content><author><name>Jai Nagaraj</name></author><category term="blog" /><summary type="html"><![CDATA[Under construction, check back soon!]]></summary></entry><entry><title type="html">Welcome to my blog</title><link href="http://localhost:4000/blog/2025/12/15/welcome/" rel="alternate" type="text/html" title="Welcome to my blog" /><published>2025-12-15T06:00:00-06:00</published><updated>2025-12-15T06:00:00-06:00</updated><id>http://localhost:4000/blog/2025/12/15/welcome</id><content type="html" xml:base="http://localhost:4000/blog/2025/12/15/welcome/"><![CDATA[<p>This is the first post on my site!</p>]]></content><author><name>Jai Nagaraj</name></author><category term="blog" /><summary type="html"><![CDATA[This is the first post on my site!]]></summary></entry></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-12-28T00:41:39-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jai Vivek Nagaraj</title><subtitle>When you say normal... what does that even mean?</subtitle><author><name>Jai Nagaraj</name></author><entry><title type="html">Online learning with a memory-efficient Kalman Filter</title><link href="http://localhost:4000/blog/2025/12/16/lofi/" rel="alternate" type="text/html" title="Online learning with a memory-efficient Kalman Filter" /><published>2025-12-16T08:00:00-06:00</published><updated>2025-12-16T08:00:00-06:00</updated><id>http://localhost:4000/blog/2025/12/16/lofi</id><content type="html" xml:base="http://localhost:4000/blog/2025/12/16/lofi/"><![CDATA[<h2 id="introduction-the-kalman-filter">Introduction: The Kalman Filter</h2>
+
+<p>Recently, I had the opportunity to learn about the Kalman filter: a powerful, versatile tool to capture uncertainty in a time-varying system. Given a series of observations and an underlying dynamical model of how the state <em>should</em> change over time, the Kalman filter can update the state based on a <strong>probability distribution of state</strong> and <strong>external observation data</strong>. It is no surprise, then, that NASA was able to utilize these properties for many aerodynamic control systems, including the <a href="https://www.lancaster.ac.uk/stor-i-student-sites/jack-trainer/how-nasa-used-the-kalman-filter-in-the-apollo-program/">famous Apollo missions to the moon</a>!</p>
+
+<p>However, another use of the Kalman filter outside of control theory is machine learning. Rather than traditional methods of optimizing a model, we can frame the idea of model learning in terms of uncertainty: we start off being <em>highly uncertain</em> that our model parameters are optimal, and ideally use a variant of the Kalman filter algorithm to shrink our uncertainty (and therefore naturally optimize the model in the state-estimation process). As it turns out, this is not only reasonable, but also quite performant; the calculations have been shown to use second-order information when computing the next state. We call this method the Extended Kalman Filter (EKF).</p>
+
+<h3 id="the-ekf-algorithm">The EKF algorithm</h3>
+<p>We can roughly describe the algorithm in the following steps:</p>
+
+<ol>
+  <li>“A priori” predictions; essentially, making a simple prediction of what the next state will be. $\theta$ represents the model parameters as a vector, $\Sigma$ represents the covariance matrix of the parameters, $\mathbf{Q}$ represents the process covariance noise, and $\mathbf{f_\theta}$ represents the output of the model with parameters $\theta$. To generalize this problem to one in control theory, let’s suppose we are learning to optimize controls over an automaton that has state $\mathbf{x}$ and controls $\mathbf{u}$.</li>
+</ol>
+
+\[\begin{aligned}
+&amp; \theta_{t+1|t}=\theta_t \\
+&amp; \Sigma_{t+1|t} = \Sigma_t + \mathbf{Q}\\
+&amp; x_{t+1|t}=\mathbf{f}_{\theta_{t+1|t}}(\mathbf{x}_t, \mathbf{u}_t)
+\end{aligned}\]
+
+<ol start="2">
+  <li>Kalman gain computation, which helps scale how much to change the parameters (almost like a “learning rate”). $\mathbf{R}_t$ is the observation covariance noise, and crucially, $\mathbf{K}_t$ is the <strong>Kalman gain</strong> matrix.</li>
+</ol>
+
+\[\begin{aligned}
+&amp; \mathbf{F}_t=\frac{\partial \mathbf{f}}{\partial \theta} (\mathbf{x}_t, \mathbf{u}_t, \theta_t) \\
+&amp; \mathbf{S}_t=\mathbf{F}_t \Sigma_{t+1|t} \mathbf{F}^\top_t + \mathbf{R}_t \\
+&amp; \mathbf{K}_t = \Sigma_{t+1|t}\mathbf{F}^\top_t\mathbf{S}^{-1}_t
+\end{aligned}\]
+
+<ol start="3">
+  <li>Posterior computation, which uses the Kalman gain to update the state distribution. $\mathbf{I}$ is the identity matrix while $\mathbf{s}_t$ is the <em>innovation</em>: the difference between the predicted and observed next state.</li>
+</ol>
+
+\[\begin{aligned}
+&amp; \mathbf{s}_t = \mathbf{x}_{t+1} - \mathbf{x}_{t+1|t} \\
+&amp; \theta_{t+1} = \theta_{t+1|t} + \mathbf{K}_t\mathbf{s}_t \\
+&amp; \Sigma_{t+1} = (\mathbf{I}-\mathbf{K}_t\mathbf{s}_t) \Sigma_{t+1|t} \\
+&amp; \textbf{return } \theta_{t+1}, \Sigma_{t+1} \\
+\end{aligned}\]
+
+<p>One may repeat this process for all times $t$.</p>
+
+<h3 id="in-practice">In practice</h3>
+<p>Using the Jax library in Python, the above algorithm can be implemented as follows:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">jax</span>
+<span class="kn">import</span> <span class="n">jax.numpy</span> <span class="k">as</span> <span class="n">jnp</span>
+
+<span class="c1"># Any functions not defined can be assumed to work as the signature implies.
+</span><span class="k">def</span> <span class="nf">ekf_step</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">mean_t</span><span class="p">,</span> <span class="n">cov_t</span><span class="p">,</span> <span class="n">control_t</span><span class="p">,</span> <span class="n">obs_tp1</span><span class="p">):</span>
+    <span class="c1"># A priori predictions
+</span>    <span class="n">mean_tp1_apriori</span> <span class="o">=</span> <span class="n">mean_t</span>
+    <span class="n">cov_tp1_apriori</span> <span class="o">=</span> <span class="n">cov_t</span> <span class="o">+</span> <span class="nf">process_cov_fn</span><span class="p">(</span>
+        <span class="n">mean_tp1_apriori</span>
+    <span class="p">)</span>
+    <span class="n">obs_tp1_apriori</span> <span class="o">=</span> <span class="nf">observation_fn</span><span class="p">(</span>
+        <span class="n">mean_tp1_apriori</span><span class="p">,</span> <span class="n">control_t</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Kalman gain calculation via Jacobian
+</span>    <span class="n">jac_obs</span> <span class="o">=</span> <span class="n">jax</span><span class="p">.</span><span class="nf">jacrev</span><span class="p">(</span><span class="n">observation_fn</span><span class="p">,</span> <span class="n">argnums</span><span class="o">=</span><span class="mi">0</span><span class="p">)(</span>
+        <span class="n">mean_tp1_apriori</span><span class="p">,</span> <span class="n">control_t</span>
+    <span class="p">)</span>
+    <span class="n">R_t</span> <span class="o">=</span> <span class="nf">observation_cov_fn</span><span class="p">(</span><span class="n">mean_tp1_apriori</span><span class="p">)</span>
+    <span class="n">S_t</span> <span class="o">=</span> <span class="n">R_t</span> <span class="o">+</span> <span class="n">jac_obs</span> <span class="o">@</span> <span class="n">cov_tp1_apriori</span> <span class="o">@</span> <span class="n">jac_obs</span><span class="p">.</span><span class="n">T</span>
+    <span class="n">kalman_gain</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">cov_tp1_apriori</span> <span class="o">@</span> <span class="n">jac_obs</span><span class="p">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">jnp</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="nf">inv</span><span class="p">(</span><span class="n">S_t</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">innovation_cov</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">jac_obs</span> <span class="o">@</span> <span class="n">cov_tp1_apriori</span> <span class="o">@</span> <span class="n">jac_obs</span><span class="p">.</span><span class="n">T</span>
+        <span class="o">+</span> <span class="nf">observation_cov_fn</span><span class="p">(</span><span class="n">mean_tp1_apriori</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Posterior calculation
+</span>    <span class="n">innovation</span> <span class="o">=</span> <span class="n">obs_tp1</span> <span class="o">-</span> <span class="n">obs_tp1_apriori</span>
+    <span class="n">mean_tp1</span> <span class="o">=</span> <span class="n">mean_tp1_apriori</span> <span class="o">+</span> <span class="n">kalman_gain</span> <span class="o">@</span> <span class="n">innovation</span>
+    <span class="n">eye_cov</span> <span class="o">=</span> <span class="n">jnp</span><span class="p">.</span><span class="nf">eye</span><span class="p">(</span><span class="n">cov_t</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">cov_tp1</span> <span class="o">=</span> <span class="p">(</span><span class="n">eye_cov</span> <span class="o">-</span> <span class="n">kalman_gain</span> <span class="o">@</span> <span class="n">jac_obs</span><span class="p">)</span> <span class="o">@</span> <span class="n">cov_tp1_apriori</span>
+
+    <span class="k">return</span> <span class="n">mean_tp1</span><span class="p">,</span> <span class="n">cov_tp1</span>
+</code></pre></div></div>
+
+<p>The EKF works remarkably well for regression problems. We can easily frame regression as a state-estimation problem to fit the algorithm above: the output of $\mathbf{f}_\theta$ should minimize the innovation under a constant control of $\mathbf{u}_t=\vec{0}$, $\forall t$. Here, I demonstrate the results of training a simple 641-parameter multilayer perceptron with two hidden layers using an Adam optimizer as a baseline:</p>
+
+<p>&lt;insert image here&gt;</p>
+
+<p>As expected, the EKF performs much better than gradient-descent optimizers due to the second-order information the EKF has access to!</p>
+
+<h2 id="lofi-low-rank-filter">LOFI: Low-rank Filter</h2>
+
+<h3 id="motivation">Motivation</h3>
+<p>There is but one issue with the Kalman filter: it’s computationally and spacially expensive. Not only does the</p>]]></content><author><name>Jai Nagaraj</name></author><category term="blog" /><summary type="html"><![CDATA[Introduction: The Kalman Filter]]></summary></entry><entry><title type="html">Welcome to my blog</title><link href="http://localhost:4000/blog/2025/12/15/welcome/" rel="alternate" type="text/html" title="Welcome to my blog" /><published>2025-12-15T06:00:00-06:00</published><updated>2025-12-15T06:00:00-06:00</updated><id>http://localhost:4000/blog/2025/12/15/welcome</id><content type="html" xml:base="http://localhost:4000/blog/2025/12/15/welcome/"><![CDATA[<p>This is the first post on my site!</p>]]></content><author><name>Jai Nagaraj</name></author><category term="blog" /><summary type="html"><![CDATA[This is the first post on my site!]]></summary></entry></feed>
