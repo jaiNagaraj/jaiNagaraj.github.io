@@ -4,6 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Apply dark mode immediately to prevent flash -->
+    <script>
+      (function() {
+        var pref = null;
+        try { pref = localStorage.getItem('dark-mode'); } catch(e) {}
+        if (pref === 'dark' || (!pref && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>Publications | Jai Vivek Nagaraj</title>
 <meta name="generator" content="Jekyll v4.4.1" />
