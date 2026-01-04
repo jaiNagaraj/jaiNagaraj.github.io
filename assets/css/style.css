@@ -44,6 +44,21 @@ body {
   color: var(--text) !important;
 }
 
+/* Mobile nav menu background */
+.site-nav {
+  background-color: var(--header-bg);
+  border-color: var(--border-color);
+}
+
+.site-nav .trigger {
+  background-color: var(--header-bg);
+}
+
+/* Hamburger menu icon color */
+html.dark-mode .site-nav .menu-icon > svg path {
+  fill: #ffffff;
+}
+
 .site-footer {
   background-color: var(--header-bg);
   border-top-color: var(--border-color);
