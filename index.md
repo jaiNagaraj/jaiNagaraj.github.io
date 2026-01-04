@@ -1,9 +1,9 @@
 ---
-layout: home
+layout: default
 title: Home
 ---
 
-Hello world! I'm **Jai Nagaraj**. This personal site contains info about me, what I'm up to, and occasional ramblings.
+Hello world! Here, you can find info about me, what I'm up to, and occasional ramblings.
 
 Contact me here: `jai [dot] v [dot] nagaraj [at] gmail [dot] com`
 

@@ -115,3 +115,33 @@ html.dark-mode li > code {
   color: #d4d4d4;
   border: none;
 }
+
+/* Post date display: hide automatic published time and show custom updated meta */
+.post-header .post-meta .dt-published { display: none; }
+.post-meta-updated { font-size: 0.95rem; color: #6b6b6b; margin-top: 0.25rem; }
+.post-meta-updated time { color: inherit; }
+
+/* Footer layout tweaks: align footer columns to top and add RSS link style */
+.footer-col-wrapper { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 2rem; }
+.footer-col { float: none; padding-left: 0; flex: 1 1 180px; min-width: 160px; }
+.footer-rss { margin-top: 0.25rem; }
+.footer-col-wrapper { display: flex; align-items: flex-start; flex-wrap: nowrap; gap: 3rem; flex: 1 1 auto; }
+.footer-col { float: none; padding-left: 0; flex: 1 1 220px; min-width: 140px; }
+.footer-col-brand { flex: 0 0 220px; min-width: 160px; }
+.footer-col-desc { flex: 1 1 360px; min-width: 260px; }
+
+/* Reduce footer vertical space and align footer heading */
+.site-footer { padding: 12px 0; }
+.site-footer > .wrapper { display: flex; align-items: flex-start; gap: 2.5rem; justify-content: space-between; }
+.footer-heading { margin: 0; padding-top: 4px; }
+.site-footer > .wrapper { display: flex; align-items: flex-start; gap: 3rem; justify-content: space-between; flex-wrap: nowrap; width: 100%; padding-left: 8px; padding-right: 8px; }
+.footer-heading { margin: 0; padding-top: 4px; flex: 0 0 auto; }
+
+/* Social icon sizing in footer */
+.svg-icon { width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; fill: var(--text); }
+
+@media (max-width: 768px) {
+  .footer-col-wrapper { display: block; }
+  .footer-col { width: 100%; }
+  .site-footer > .wrapper { display: block; }
+}
