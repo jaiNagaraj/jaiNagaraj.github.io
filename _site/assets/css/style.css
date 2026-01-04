@@ -219,6 +219,45 @@ html.dark-mode li > code {
   fill: var(--text);
 }
 
+/* Dark-mode toggle icons */
+#dark-mode-toggle {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+}
+
+.dm-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  display: inline-block;
+  stroke: currentColor;
+}
+
+/* show the icon indicating the mode the toggle WILL SWITCH TO */
+/* default (light mode): show moon icon (click -> switch to dark) */
+.dm-icon-sun {
+  display: none;
+}
+
+.dm-icon-moon {
+  display: inline-block;
+}
+
+/* in dark mode, show sun icon (click -> switch to light) */
+html.dark-mode .dm-icon-sun {
+  display: inline-block;
+}
+
+html.dark-mode .dm-icon-moon {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .footer-col-wrapper {
     display: block;
