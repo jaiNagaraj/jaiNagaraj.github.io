@@ -9,4 +9,3 @@ Contact me here: `jai [dot] v [dot] nagaraj [at] gmail [dot] com`
 
 - [Blog](/blog/)
 - [My Publications](/publications/)
-- [My Resume (PDF)]({{ '/assets/files/Jai_Nagaraj_Resume.pdf' | relative_url }}){:target="_blank" rel="noopener noreferrer"}
